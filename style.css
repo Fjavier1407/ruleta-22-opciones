@@ -1,0 +1,86 @@
+:root {
+  --background: #11101d;
+  --panel: #1c1a30;
+  --text: #f7f3ff;
+  --muted: #c3bdd6;
+  --accent: #d8b46a;
+  --accent-dark: #a77e36;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #30264d 0%, var(--background) 55%);
+  color: var(--text);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.app {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 28px 18px 48px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font: 700 0.75rem/1.2 Arial, sans-serif;
+  letter-spacing: 0.18em;
+}
+
+h1 { margin: 0; font-size: clamp(2.2rem, 8vw, 4.4rem); }
+.subtitle {
+  max-width: 560px;
+  margin: 12px auto 24px;
+  color: var(--muted);
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  line-height: 1.45;
+}
+
+.wheel-area { position: relative; width: min(92vw, 700px); margin: 0 auto 18px; }
+canvas { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 28px #0008); }
+.pointer {
+  position: absolute;
+  z-index: 2;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 17px solid transparent;
+  border-right: 17px solid transparent;
+  border-top: 40px solid var(--accent);
+  filter: drop-shadow(0 3px 2px #0008);
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+.primary-button, .pdf-button {
+  display: inline-block;
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 28px;
+  font: 700 1rem Arial, sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+}
+.primary-button { background: var(--accent); color: #20182a; }
+.primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.pdf-button { background: #f3e7c9; color: #21192b; margin-top: 12px; }
+.status { min-height: 24px; color: var(--muted); font: 0.95rem Arial, sans-serif; }
+.result-card {
+  margin: 22px auto 0;
+  padding: 24px 18px 28px;
+  background: linear-gradient(145deg, #292342, var(--panel));
+  border: 1px solid #b99b5a66;
+  border-radius: 24px;
+  max-width: 560px;
+}
+.result-label { margin: 0; color: var(--accent); font: 700 0.75rem Arial, sans-serif; letter-spacing: 0.16em; }
+.result-card h2 { margin: 12px 0 8px; font-size: clamp(1.7rem, 6vw, 2.7rem); }
+.result-number { margin: 0; color: var(--muted); font: 0.9rem Arial, sans-serif; }
+.hidden { display: none; }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17152b">
+  <title>Ruleta de Arcanos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">TAROT · 22 CAMINOS</p>
+      <h1>Ruleta de Arcanos</h1>
+      <p class="subtitle">Es peligroso allá fuera, tu Arcano te guiará en el camino</p>
+    </header>
+
+    <section class="wheel-area" aria-label="Ruleta de Arcanos">
+      <div class="pointer" aria-hidden="true"></div>
+      <canvas id="wheel" width="700" height="700"></canvas>
+    </section>
+
+    <button id="spinButton" class="primary-button">Girar la ruleta</button>
+    <p id="status" class="status" role="status">Elegí tu destino.</p>
+
+    <section id="resultCard" class="result-card hidden" aria-live="polite">
+      <p class="result-label">TU ARCANO ES</p>
+      <h2 id="resultName"></h2>
+      <p id="resultNumber" class="result-number"></p>
+      <a id="pdfButton" class="pdf-button" href="#" download>Descargar PDF</a>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
