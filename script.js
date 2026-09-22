@@ -297,25 +297,40 @@ function spinWheel() {
 }
 
 function showResult(index) {
-    const number = index + 1;
-    const pdfNumber = String(number).padStart(2, "0");
-    
-    resultName.textContent = arcanos[index];
-    resultNumber.textContent = "Arcano " + number;
-    pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
-    pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
-    
-    resultCard.classList.remove("hidden");
-    
-    // NUEVO: Hacemos visible el botón de reinicio en bloque debajo del PDF
-    if (resetButton) { resetButton.style.display = "block"; } 
-    
-    status.textContent = "Tu Arcano ha sido elegido.";
+  const number = index + 1;
+  const pdfNumber = String(number).padStart(2, "0");
+  
+  resultName.textContent = arcanos[index];
+  resultNumber.textContent = "Arcano " + number;
+  pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
+  pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
+  
+  resultCard.classList.remove("hidden");
+  pdfButton.classList.remove("hidden");
+  
+  // Ocultamos el botón principal de girar y mostramos el de reinicio
+  spinButton.classList.add("hidden");
+  if (resetButton) resetButton.classList.remove("hidden"); 
+  
+  status.textContent = "Tu Arcano ha sido elegido.";
 }
 
-// NUEVO: Escuchador para que el botón de reinicio vuelva a ejecutar el giro de la ruleta
+// Nueva función para volver al estado inicial sin girar automáticamente
+function resetApp() {
+  resultCard.classList.add("hidden");
+  pdfButton.classList.add("hidden");
+  if (resetButton) resetButton.classList.add("hidden");
+
+  // Volvemos a mostrar el botón inicial de giro
+  spinButton.classList.remove("hidden");
+  spinButton.disabled = false;
+
+  status.textContent = "Elegí tu destino.";
+}
+
+// Escuchador actualizado para el botón de reinicio
 if (resetButton) {
-    resetButton.addEventListener("click", spinWheel);
+  resetButton.addEventListener("click", resetApp);
 }
 
 spinButton.addEventListener("click", spinWheel);
