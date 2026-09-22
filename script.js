@@ -1,53 +1,17 @@
 "use strict";
 
 const arcanos = [
-  "El Loco",
-  "El Mago",
-  "La Sacerdotisa",
-  "La Emperatriz",
-  "El Emperador",
-  "El Hierofante",
-  "Los Enamorados",
-  "El Carro",
-  "La Justicia",
-  "El Ermitaño",
-  "La Rueda de la Fortuna",
-  "La Fuerza",
-  "El Colgado",
-  "La Muerte",
-  "La Templanza",
-  "El Diablo",
-  "La Torre",
-  "La Estrella",
-  "La Luna",
-  "El Sol",
-  "El Juicio",
-  "El Mundo"
+  "El Loco", "El Mago", "La Sacerdotisa", "La Emperatriz", "El Emperador",
+  "El Hierofante", "Los Enamorados", "El Carro", "La Justicia", "El Ermitaño",
+  "La Rueda de la Fortuna", "La Fuerza", "El Colgado", "La Muerte", "La Templanza",
+  "El Diablo", "La Torre", "La Estrella", "La Luna", "El Sol", "El Juicio", "El Mundo"
 ];
 
 const colors = [
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7",
-  "#6A0DAD",
-  "#A855F7"
+  "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7",
+  "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7",
+  "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7",
+  "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7"
 ];
 
 const lightColor = "#D8B4FE";
@@ -78,6 +42,8 @@ function resizeCanvas() {
 
   canvas.width = size * dpr;
   canvas.height = size * dpr;
+  canvas.style.width = `${size}px`;
+  canvas.style.height = `${size}px`;
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   drawWheel();
@@ -88,9 +54,7 @@ function drawWheel() {
   const height = canvas.clientHeight;
   const size = Math.min(width, height);
 
-  if (!size) {
-    return;
-  }
+  if (!size) return;
 
   const cx = width / 2;
   const cy = height / 2;
@@ -102,7 +66,7 @@ function drawWheel() {
   ctx.translate(cx, cy);
   ctx.rotate(rotation);
 
-for (let i = 0; i < total; i++) {
+  for (let i = 0; i < total; i++) {
     const start = -Math.PI / 2 + i * slice;
     const end = start + slice;
 
@@ -119,7 +83,6 @@ for (let i = 0; i < total; i++) {
     ctx.stroke();
 
     const mid = start + slice / 2;
-    // Ajustamos el textRadius para que empiece más cerca del centro o del borde según prefieras
     const textRadius = radius * 0.50; 
 
     ctx.save();
@@ -128,26 +91,20 @@ for (let i = 0; i < total; i++) {
       Math.sin(mid) * textRadius
     );
     
-    // CAMBIO CLAVE: Quitamos el Math.PI / 2 para que el texto apunte hacia afuera del círculo (vertical)
     ctx.rotate(mid); 
 
     const name = arcanos[i];
-    
-    // Al estar vertical, ahora tienes más espacio hacia el borde del círculo.
-    // 'maxHeight' (o la longitud máxima de la línea) ahora puede ser hasta el borde del radio.
     const maxHeightText = radius * 0.45; 
 
     let fontSize = Math.max(11, Math.min(17, size * 0.025));
-    ctx.font = "700 " + fontSize + "px Georgia, serif";
+    ctx.font = `700 ${fontSize}px Georgia, serif`;
 
-    // El control de tamaño sigue midiendo el ancho del texto, 
-    // pero ahora se limita contra el espacio vertical disponible (maxHeightText)
     while (
       ctx.measureText(name).width > maxHeightText &&
       fontSize > 9
     ) {
       fontSize -= 1;
-      ctx.font = "700 " + fontSize + "px Georgia, serif";
+      ctx.font = `700 ${fontSize}px Georgia, serif`;
     }
 
     ctx.textAlign = "center";
@@ -157,13 +114,10 @@ for (let i = 0; i < total; i++) {
     ctx.shadowColor = "#1E1E24CC";
     ctx.shadowBlur = 4;
 
-    // Si tu función drawWrappedText escribe líneas hacia abajo, 
-    // ahora esas "líneas" se extenderán hacia el borde exterior de la rueda.
     drawWrappedText(name, 0, 0, maxHeightText, fontSize * 1.05);
 
     ctx.restore();
-}
-
+  }
 
   ctx.restore();
 
@@ -202,9 +156,7 @@ for (let i = 0; i < total; i++) {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.fillStyle = lightColor;
-  ctx.strokeStyle = lightColor;
-  ctx.lineWidth = Math.max(2, size * 0.004);
-  ctx.font = Math.max(22, size * 0.055) + "px Georgia, serif";
+  ctx.font = `${Math.max(22, size * 0.055)}px Georgia, serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.shadowColor = "#A855F7CC";
@@ -242,58 +194,50 @@ function drawWrappedText(text, x, y, maxWidth, lineHeight) {
   });
 }
 
-function getSelectedIndex() {
-  const normalized =
-    ((-rotation % (Math.PI * 2)) + Math.PI * 2) %
-    (Math.PI * 2);
-
-  return Math.floor(normalized / slice) % total;
-}
-
 function spinWheel() {
-    if (spinning) { return; }
-    spinning = true;
-    spinButton.disabled = true;
+  if (spinning) return;
+  spinning = true;
+  spinButton.disabled = true;
+  
+  resultCard.classList.add("hidden");
+  pdfButton.classList.add("hidden");
+  if (resetButton) resetButton.classList.add("hidden"); 
+  
+  status.textContent = "La ruleta está girando...";
+  
+  const selectedIndex = Math.floor(Math.random() * total);
+  const targetAngle = -selectedIndex * slice - slice / 2;
+  const current = rotation % (Math.PI * 2);
+  const normalizedCurrent = current < 0 ? current + Math.PI * 2 : current;
+  
+  let delta = targetAngle - normalizedCurrent;
+  while (delta < 0) { delta += Math.PI * 2; }
+  
+  const extraTurns = 6 + Math.floor(Math.random() * 3);
+  const finalRotation = rotation + delta + extraTurns * Math.PI * 2;
+  const startRotation = rotation;
+  const duration = 4800 + Math.random() * 700;
+  const startTime = performance.now();
+  
+  function animate(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
     
-    // MODIFICADO: Ocultamos el contenedor de resultados y el botón de reinicio al empezar a girar
-    resultCard.classList.add("hidden");
-    if (resetButton) { resetButton.style.display = "none"; } 
+    const eased = 1 - Math.pow(1 - progress, 3);
+    rotation = startRotation + (finalRotation - startRotation) * eased;
+    drawWheel();
     
-    status.textContent = "La ruleta está girando...";
-    
-    const selectedIndex = Math.floor(Math.random() * total);
-    const targetAngle = -selectedIndex * slice - slice / 2;
-    const current = rotation % (Math.PI * 2);
-    const normalizedCurrent = current < 0 ? current + Math.PI * 2 : current;
-    
-    let delta = targetAngle - normalizedCurrent;
-    while (delta < 0) { delta += Math.PI * 2; }
-    
-    const extraTurns = 6 + Math.floor(Math.random() * 3);
-    const finalRotation = rotation + delta + extraTurns * Math.PI * 2;
-    const startRotation = rotation;
-    const duration = 4800 + Math.random() * 700;
-    const startTime = performance.now();
-    
-    function animate(now) {
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        const eased = 1 - Math.pow(1 - progress, 3);
-        rotation = startRotation + (finalRotation - startRotation) * eased;
-        drawWheel();
-        
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        } else {
-            rotation = finalRotation;
-            drawWheel();
-            showResult(selectedIndex);
-            spinning = false;
-            spinButton.disabled = false;
-        }
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      rotation = finalRotation;
+      drawWheel();
+      showResult(selectedIndex);
+      spinning = false;
+      spinButton.disabled = false;
     }
-    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
 }
 
 function showResult(index) {
@@ -308,27 +252,23 @@ function showResult(index) {
   resultCard.classList.remove("hidden");
   pdfButton.classList.remove("hidden");
   
-  // Ocultamos el botón principal de girar y mostramos el de reinicio
   spinButton.classList.add("hidden");
   if (resetButton) resetButton.classList.remove("hidden"); 
   
   status.textContent = "Tu Arcano ha sido elegido.";
 }
 
-// Nueva función para volver al estado inicial sin girar automáticamente
 function resetApp() {
   resultCard.classList.add("hidden");
   pdfButton.classList.add("hidden");
   if (resetButton) resetButton.classList.add("hidden");
 
-  // Volvemos a mostrar el botón inicial de giro
   spinButton.classList.remove("hidden");
   spinButton.disabled = false;
 
   status.textContent = "Elegí tu destino.";
-} 
+}
 
-// Escuchador actualizado para el botón de reinicio
 if (resetButton) {
   resetButton.addEventListener("click", resetApp);
 }
@@ -336,9 +276,9 @@ if (resetButton) {
 spinButton.addEventListener("click", spinWheel);
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("load", function() {
-    resizeCanvas();
-    const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) {
-        themeColor.setAttribute("content", "#1E1E24");
-    }
+  resizeCanvas();
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+  if (themeColor) {
+    themeColor.setAttribute("content", "#1E1E24");
+  }
 });
