@@ -101,7 +101,7 @@ function drawWheel() {
   ctx.translate(cx, cy);
   ctx.rotate(rotation);
 
-  for (let i = 0; i < total; i++) {
+for (let i = 0; i < total; i++) {
     const start = -Math.PI / 2 + i * slice;
     const end = start + slice;
 
@@ -118,23 +118,31 @@ function drawWheel() {
     ctx.stroke();
 
     const mid = start + slice / 2;
-    const textRadius = radius * 0.70;
+    // Ajustamos el textRadius para que empiece más cerca del centro o del borde según prefieras
+    const textRadius = radius * 0.50; 
 
     ctx.save();
     ctx.translate(
       Math.cos(mid) * textRadius,
       Math.sin(mid) * textRadius
     );
-    ctx.rotate(mid + Math.PI / 2);
+    
+    // CAMBIO CLAVE: Quitamos el Math.PI / 2 para que el texto apunte hacia afuera del círculo (vertical)
+    ctx.rotate(mid); 
 
     const name = arcanos[i];
-    const maxWidth = radius * 0.42;
+    
+    // Al estar vertical, ahora tienes más espacio hacia el borde del círculo.
+    // 'maxHeight' (o la longitud máxima de la línea) ahora puede ser hasta el borde del radio.
+    const maxHeightText = radius * 0.45; 
 
     let fontSize = Math.max(11, Math.min(17, size * 0.025));
     ctx.font = "700 " + fontSize + "px Georgia, serif";
 
+    // El control de tamaño sigue midiendo el ancho del texto, 
+    // pero ahora se limita contra el espacio vertical disponible (maxHeightText)
     while (
-      ctx.measureText(name).width > maxWidth &&
+      ctx.measureText(name).width > maxHeightText &&
       fontSize > 9
     ) {
       fontSize -= 1;
@@ -148,10 +156,13 @@ function drawWheel() {
     ctx.shadowColor = "#1E1E24CC";
     ctx.shadowBlur = 4;
 
-    drawWrappedText(name, 0, 0, maxWidth, fontSize * 1.05);
+    // Si tu función drawWrappedText escribe líneas hacia abajo, 
+    // ahora esas "líneas" se extenderán hacia el borde exterior de la rueda.
+    drawWrappedText(name, 0, 0, maxHeightText, fontSize * 1.05);
 
     ctx.restore();
-  }
+}
+
 
   ctx.restore();
 
