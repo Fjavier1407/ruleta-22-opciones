@@ -267,3 +267,40 @@ a:focus-visible {
     border-radius: 20px;
   }
 }
+
+/* Botón Reiniciar (Girar de Nuevo) - Diseño Integrado */
+.btn-reset {
+  display: inline-block;
+  margin-top: 20px;
+  background: rgba(30, 30, 36, 0.6);
+  color: var(--violet-light);
+  border: 1.5px solid var(--violet-bright);
+  border-radius: 999px;
+  padding: 14px 28px;
+  font: 700 0.95rem Arial, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 
+    0 0 12px #A855F744,
+    inset 0 0 10px #A855F722;
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-reset:hover {
+  background: var(--violet-bright);
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 20px #A855F799,
+    0 6px 18px #00000088;
+  transform: translateY(-2px);
+}
+
+.btn-reset:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px #A855F755;
+}
