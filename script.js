@@ -63,6 +63,7 @@ const resultCard = document.getElementById("resultCard");
 const resultName = document.getElementById("resultName");
 const resultNumber = document.getElementById("resultNumber");
 const pdfButton = document.getElementById("pdfButton");
+const resetButton = document.getElementById("resetButton"); 
 
 const total = arcanos.length;
 const slice = (Math.PI * 2) / total;
@@ -250,95 +251,79 @@ function getSelectedIndex() {
 }
 
 function spinWheel() {
-  if (spinning) {
-    return;
-  }
-
-  spinning = true;
-  spinButton.disabled = true;
-  resultCard.classList.add("hidden");
-  status.textContent = "La ruleta está girando...";
-
-  const selectedIndex = Math.floor(Math.random() * total);
-
-  const targetAngle =
-    -selectedIndex * slice -
-    slice / 2;
-
-  const current =
-    rotation % (Math.PI * 2);
-
-  const normalizedCurrent =
-    current < 0 ? current + Math.PI * 2 : current;
-
-  let delta = targetAngle - normalizedCurrent;
-
-  while (delta < 0) {
-    delta += Math.PI * 2;
-  }
-
-  const extraTurns = 6 + Math.floor(Math.random() * 3);
-  const finalRotation =
-    rotation +
-    delta +
-    extraTurns * Math.PI * 2;
-
-  const startRotation = rotation;
-  const duration = 4800 + Math.random() * 700;
-  const startTime = performance.now();
-
-  function animate(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-
-    // Ease-out cúbico
-    const eased = 1 - Math.pow(1 - progress, 3);
-
-    rotation =
-      startRotation +
-      (finalRotation - startRotation) * eased;
-
-    drawWheel();
-
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      rotation = finalRotation;
-      drawWheel();
-      showResult(selectedIndex);
-      spinning = false;
-      spinButton.disabled = false;
+    if (spinning) { return; }
+    spinning = true;
+    spinButton.disabled = true;
+    
+    // MODIFICADO: Ocultamos el contenedor de resultados y el botón de reinicio al empezar a girar
+    resultCard.classList.add("hidden");
+    if (resetButton) { resetButton.style.display = "none"; } 
+    
+    status.textContent = "La ruleta está girando...";
+    
+    const selectedIndex = Math.floor(Math.random() * total);
+    const targetAngle = -selectedIndex * slice - slice / 2;
+    const current = rotation % (Math.PI * 2);
+    const normalizedCurrent = current < 0 ? current + Math.PI * 2 : current;
+    
+    let delta = targetAngle - normalizedCurrent;
+    while (delta < 0) { delta += Math.PI * 2; }
+    
+    const extraTurns = 6 + Math.floor(Math.random() * 3);
+    const finalRotation = rotation + delta + extraTurns * Math.PI * 2;
+    const startRotation = rotation;
+    const duration = 4800 + Math.random() * 700;
+    const startTime = performance.now();
+    
+    function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const eased = 1 - Math.pow(1 - progress, 3);
+        rotation = startRotation + (finalRotation - startRotation) * eased;
+        drawWheel();
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            rotation = finalRotation;
+            drawWheel();
+            showResult(selectedIndex);
+            spinning = false;
+            spinButton.disabled = false;
+        }
     }
-  }
-
-  requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
 }
 
 function showResult(index) {
-  const number = index + 1;
-  const pdfNumber = String(number).padStart(2, "0");
+    const number = index + 1;
+    const pdfNumber = String(number).padStart(2, "0");
+    
+    resultName.textContent = arcanos[index];
+    resultNumber.textContent = "Arcano " + number;
+    pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
+    pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
+    
+    resultCard.classList.remove("hidden");
+    
+    // NUEVO: Hacemos visible el botón de reinicio en bloque debajo del PDF
+    if (resetButton) { resetButton.style.display = "block"; } 
+    
+    status.textContent = "Tu Arcano ha sido elegido.";
+}
 
-  resultName.textContent = arcanos[index];
-  resultNumber.textContent = "Arcano " + number;
-
-  pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
-  pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
-
-  resultCard.classList.remove("hidden");
-  status.textContent = "Tu Arcano ha sido elegido.";
+// NUEVO: Escuchador para que el botón de reinicio vuelva a ejecutar el giro de la ruleta
+if (resetButton) {
+    resetButton.addEventListener("click", spinWheel);
 }
 
 spinButton.addEventListener("click", spinWheel);
-
 window.addEventListener("resize", resizeCanvas);
-
 window.addEventListener("load", function() {
-  resizeCanvas();
-
-  // Mantiene la barra del navegador alineada con la nueva identidad visual.
-  const themeColor = document.querySelector('meta[name="theme-color"]');
-
-  if (themeColor) {
-    themeColor.setAttribute("content", "#1E1E24");
-  }
+    resizeCanvas();
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) {
+        themeColor.setAttribute("content", "#1E1E24");
+    }
 });
