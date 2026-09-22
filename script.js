@@ -326,7 +326,7 @@ function resetApp() {
   spinButton.disabled = false;
 
   status.textContent = "Elegí tu destino.";
-}
+} 
 
 // Escuchador actualizado para el botón de reinicio
 if (resetButton) {
