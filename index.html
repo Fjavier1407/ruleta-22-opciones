@@ -20,16 +20,17 @@
       <canvas id="wheel" width="700" height="700"></canvas>
     </section>
 
-    <button id="spinButton" class="primary-button">Girar la ruleta</button>
+    <button id="spinButton" class="primary-button" type="button">Girar la ruleta</button>
     <p id="status" class="status" role="status">Elegí tu destino.</p>
 
     <section id="resultCard" class="result-card hidden" aria-live="polite">
       <p class="result-label">TU ARCANO ES</p>
       <h2 id="resultName"></h2>
       <p id="resultNumber" class="result-number"></p>
-      <a id="pdfButton" class="pdf-button" href="#" download>Descargar PDF</a>      
+      <a id="pdfButton" class="pdf-button hidden" href="#" download>Descargar PDF</a>      
     </section>
-    <button id="resetButton" class="btn-reset" style="display: none; margin-top: 10px;">Girar de Nuevo</button>
+
+    <button id="resetButton" class="btn-reset hidden" type="button">Girar de Nuevo</button>
   </main>
 
   <script src="script.js"></script>
