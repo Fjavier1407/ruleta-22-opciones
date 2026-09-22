@@ -1,115 +1,333 @@
+"use strict";
+
 const arcanos = [
-  'El Loco', 'El Mago', 'La Sacerdotisa', 'La Emperatriz', 'El Emperador',
-  'El Hierofante', 'Los Enamorados', 'El Carro', 'La Justicia', 'El Ermitaño',
-  'La Rueda de la Fortuna', 'La Fuerza', 'El Colgado', 'La Muerte',
-  'La Templanza', 'El Diablo', 'La Torre', 'La Estrella', 'La Luna',
-  'El Sol', 'El Juicio', 'El Mundo'
+  "El Loco",
+  "El Mago",
+  "La Sacerdotisa",
+  "La Emperatriz",
+  "El Emperador",
+  "El Hierofante",
+  "Los Enamorados",
+  "El Carro",
+  "La Justicia",
+  "El Ermitaño",
+  "La Rueda de la Fortuna",
+  "La Fuerza",
+  "El Colgado",
+  "La Muerte",
+  "La Templanza",
+  "El Diablo",
+  "La Torre",
+  "La Estrella",
+  "La Luna",
+  "El Sol",
+  "El Juicio",
+  "El Mundo"
 ];
 
-const canvas = document.getElementById('wheel');
-const ctx = canvas.getContext('2d');
-const spinButton = document.getElementById('spinButton');
-const status = document.getElementById('status');
-const resultCard = document.getElementById('resultCard');
-const resultName = document.getElementById('resultName');
-const resultNumber = document.getElementById('resultNumber');
-const pdfButton = document.getElementById('pdfButton');
+const colors = [
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7",
+  "#6A0DAD",
+  "#A855F7"
+];
 
-const center = canvas.width / 2;
-const radius = center - 18;
-const segmentAngle = (Math.PI * 2) / arcanos.length;
+const lightColor = "#D8B4FE";
+const darkColor = "#1E1E24";
+const textColor = "#FAF7FF";
+
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+
+const spinButton = document.getElementById("spinButton");
+const status = document.getElementById("status");
+const resultCard = document.getElementById("resultCard");
+const resultName = document.getElementById("resultName");
+const resultNumber = document.getElementById("resultNumber");
+const pdfButton = document.getElementById("pdfButton");
+
+const total = arcanos.length;
+const slice = (Math.PI * 2) / total;
+
 let rotation = 0;
 let spinning = false;
 
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  const size = Math.max(1, Math.round(rect.width));
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawWheel();
+}
+
 function drawWheel() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const size = Math.min(width, height);
+
+  if (!size) {
+    return;
+  }
+
+  const cx = width / 2;
+  const cy = height / 2;
+  const radius = size * 0.46;
+
+  ctx.clearRect(0, 0, width, height);
+
   ctx.save();
-  ctx.translate(center, center);
+  ctx.translate(cx, cy);
   ctx.rotate(rotation);
 
-  for (let i = 0; i < arcanos.length; i += 1) {
-    const start = -Math.PI / 2 + i * segmentAngle;
-    const end = start + segmentAngle;
-    const hue = 250 + (i % 6) * 9;
+  for (let i = 0; i < total; i++) {
+    const start = -Math.PI / 2 + i * slice;
+    const end = start + slice;
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, radius, start, end);
     ctx.closePath();
-    ctx.fillStyle = `hsl(${hue}, 28%, ${i % 2 === 0 ? 25 : 31}%)`;
+
+    ctx.fillStyle = colors[i];
     ctx.fill();
-    ctx.strokeStyle = '#d8b46a99';
-    ctx.lineWidth = 2;
+
+    ctx.strokeStyle = "#D8B4FE88";
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
+    const mid = start + slice / 2;
+    const textRadius = radius * 0.70;
+
     ctx.save();
-    ctx.rotate(start + segmentAngle / 2);
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fff8e8';
-    ctx.font = 'bold 17px Arial';
-    ctx.fillText(String(i + 1).padStart(2, '0'), radius - 24, 0);
+    ctx.translate(
+      Math.cos(mid) * textRadius,
+      Math.sin(mid) * textRadius
+    );
+    ctx.rotate(mid + Math.PI / 2);
+
+    const name = arcanos[i];
+    const maxWidth = radius * 0.42;
+
+    let fontSize = Math.max(11, Math.min(17, size * 0.025));
+    ctx.font = "700 " + fontSize + "px Georgia, serif";
+
+    while (
+      ctx.measureText(name).width > maxWidth &&
+      fontSize > 9
+    ) {
+      fontSize -= 1;
+      ctx.font = "700 " + fontSize + "px Georgia, serif";
+    }
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = i % 2 === 0 ? textColor : "#FFFFFF";
+
+    ctx.shadowColor = "#1E1E24CC";
+    ctx.shadowBlur = 4;
+
+    drawWrappedText(name, 0, 0, maxWidth, fontSize * 1.05);
+
     ctx.restore();
   }
 
+  ctx.restore();
+
+  // Borde exterior
   ctx.beginPath();
-  ctx.arc(0, 0, 65, 0, Math.PI * 2);
-  ctx.fillStyle = '#17152b';
-  ctx.fill();
-  ctx.strokeStyle = '#d8b46a';
-  ctx.lineWidth = 5;
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = lightColor;
+  ctx.lineWidth = Math.max(3, size * 0.008);
+  ctx.shadowColor = "#A855F7AA";
+  ctx.shadowBlur = 14;
   ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Centro
+  const centerRadius = radius * 0.18;
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, centerRadius, 0, Math.PI * 2);
+  ctx.fillStyle = darkColor;
+  ctx.fill();
+
+  ctx.strokeStyle = lightColor;
+  ctx.lineWidth = Math.max(2, size * 0.006);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, centerRadius * 0.72, 0, Math.PI * 2);
+  ctx.strokeStyle = "#A855F7";
+  ctx.lineWidth = Math.max(2, size * 0.004);
+  ctx.shadowColor = "#A855F7CC";
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Símbolo central
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.fillStyle = lightColor;
+  ctx.strokeStyle = lightColor;
+  ctx.lineWidth = Math.max(2, size * 0.004);
+  ctx.font = Math.max(22, size * 0.055) + "px Georgia, serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "#A855F7CC";
+  ctx.shadowBlur = 10;
+  ctx.fillText("✦", 0, 1);
   ctx.restore();
 }
 
-function chooseArcano() {
-  return Math.floor(Math.random() * arcanos.length);
+function drawWrappedText(text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  const lines = [];
+  let current = "";
+
+  words.forEach(function(word) {
+    const test = current ? current + " " + word : word;
+
+    if (ctx.measureText(test).width <= maxWidth) {
+      current = test;
+    } else {
+      if (current) {
+        lines.push(current);
+      }
+      current = word;
+    }
+  });
+
+  if (current) {
+    lines.push(current);
+  }
+
+  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach(function(line, index) {
+    ctx.fillText(line, x, startY + index * lineHeight);
+  });
 }
 
-function showResult(index) {
-  const fileName = `pdf/opcion-${String(index + 1).padStart(2, '0')}.pdf`;
-  resultName.textContent = arcanos[index];
-  resultNumber.textContent = `Arcano ${index + 1} de 22`;
-  pdfButton.href = fileName;
-  pdfButton.setAttribute('download', fileName.split('/').pop());
-  resultCard.classList.remove('hidden');
-  status.textContent = 'Tu camino ha sido revelado.';
+function getSelectedIndex() {
+  const normalized =
+    ((-rotation % (Math.PI * 2)) + Math.PI * 2) %
+    (Math.PI * 2);
+
+  return Math.floor(normalized / slice) % total;
 }
 
-function spin() {
-  if (spinning) return;
+function spinWheel() {
+  if (spinning) {
+    return;
+  }
+
   spinning = true;
   spinButton.disabled = true;
-  resultCard.classList.add('hidden');
-  status.textContent = 'La ruleta está girando...';
+  resultCard.classList.add("hidden");
+  status.textContent = "La ruleta está girando...";
 
-  const selectedIndex = chooseArcano();
-  const targetCenter = -Math.PI / 2 + (selectedIndex + 0.5) * segmentAngle;
-  const desiredRotation = -targetCenter - Math.PI / 2;
-  const extraTurns = (5 + Math.floor(Math.random() * 3)) * Math.PI * 2;
+  const selectedIndex = Math.floor(Math.random() * total);
+
+  const targetAngle =
+    -selectedIndex * slice -
+    slice / 2;
+
+  const current =
+    rotation % (Math.PI * 2);
+
+  const normalizedCurrent =
+    current < 0 ? current + Math.PI * 2 : current;
+
+  let delta = targetAngle - normalizedCurrent;
+
+  while (delta < 0) {
+    delta += Math.PI * 2;
+  }
+
+  const extraTurns = 6 + Math.floor(Math.random() * 3);
+  const finalRotation =
+    rotation +
+    delta +
+    extraTurns * Math.PI * 2;
+
   const startRotation = rotation;
-  const endRotation = rotation + extraTurns + desiredRotation - rotation;
-  const duration = 4200;
+  const duration = 4800 + Math.random() * 700;
   const startTime = performance.now();
 
   function animate(now) {
-    const progress = Math.min((now - startTime) / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 4);
-    rotation = startRotation + (endRotation - startRotation) * eased;
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    // Ease-out cúbico
+    const eased = 1 - Math.pow(1 - progress, 3);
+
+    rotation =
+      startRotation +
+      (finalRotation - startRotation) * eased;
+
     drawWheel();
 
     if (progress < 1) {
       requestAnimationFrame(animate);
     } else {
-      rotation %= Math.PI * 2;
+      rotation = finalRotation;
+      drawWheel();
+      showResult(selectedIndex);
       spinning = false;
       spinButton.disabled = false;
-      showResult(selectedIndex);
     }
   }
 
   requestAnimationFrame(animate);
 }
 
-spinButton.addEventListener('click', spin);
-drawWheel();
+function showResult(index) {
+  const number = index + 1;
+  const pdfNumber = String(number).padStart(2, "0");
+
+  resultName.textContent = arcanos[index];
+  resultNumber.textContent = "Arcano " + number;
+
+  pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
+  pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
+
+  resultCard.classList.remove("hidden");
+  status.textContent = "Tu Arcano ha sido elegido.";
+}
+
+spinButton.addEventListener("click", spinWheel);
+
+window.addEventListener("resize", resizeCanvas);
+
+window.addEventListener("load", function() {
+  resizeCanvas();
+
+  // Mantiene la barra del navegador alineada con la nueva identidad visual.
+  const themeColor = document.querySelector('meta[name="theme-color"]');
+
+  if (themeColor) {
+    themeColor.setAttribute("content", "#1E1E24");
+  }
+});

@@ -1,20 +1,42 @@
 :root {
-  --background: #11101d;
-  --panel: #1c1a30;
-  --text: #f7f3ff;
-  --muted: #c3bdd6;
-  --accent: #d8b46a;
-  --accent-dark: #a77e36;
+  --violet-intense: #6A0DAD;
+  --violet-bright: #A855F7;
+  --violet-light: #D8B4FE;
+  --graphite: #1E1E24;
+
+  --background: #1E1E24;
+  --panel: #15151A;
+  --panel-light: #21182B;
+
+  --text: #FAF7FF;
+  --muted: #CFC5DB;
+
+  --accent: #A855F7;
+  --accent-dark: #6A0DAD;
+  --accent-light: #D8B4FE;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--graphite);
+}
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #30264d 0%, var(--background) 55%);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      #3B1558 0%,
+      #24152F 30%,
+      var(--graphite) 65%
+    );
   color: var(--text);
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 .app {
@@ -26,12 +48,27 @@ body {
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--accent);
+  color: var(--violet-light);
   font: 700 0.75rem/1.2 Arial, sans-serif;
   letter-spacing: 0.18em;
+  text-shadow: 0 0 12px #A855F766;
 }
 
-h1 { margin: 0; font-size: clamp(2.2rem, 8vw, 4.4rem); }
+h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 8vw, 4.4rem);
+  line-height: 1.05;
+  background: linear-gradient(
+    135deg,
+    var(--violet-light),
+    var(--violet-bright)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px #A855F733;
+}
+
 .subtitle {
   max-width: 560px;
   margin: 12px auto 24px;
@@ -40,8 +77,21 @@ h1 { margin: 0; font-size: clamp(2.2rem, 8vw, 4.4rem); }
   line-height: 1.45;
 }
 
-.wheel-area { position: relative; width: min(92vw, 700px); margin: 0 auto 18px; }
-canvas { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 28px #0008); }
+.wheel-area {
+  position: relative;
+  width: min(92vw, 700px);
+  margin: 0 auto 18px;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter:
+    drop-shadow(0 0 10px #A855F755)
+    drop-shadow(0 18px 28px #000000AA);
+}
+
 .pointer {
   position: absolute;
   z-index: 2;
@@ -52,12 +102,19 @@ canvas { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 2
   height: 0;
   border-left: 17px solid transparent;
   border-right: 17px solid transparent;
-  border-top: 40px solid var(--accent);
-  filter: drop-shadow(0 3px 2px #0008);
+  border-top: 40px solid var(--violet-bright);
+  filter:
+    drop-shadow(0 0 5px #A855F7CC)
+    drop-shadow(0 3px 2px #000000AA);
 }
 
-button, a { -webkit-tap-highlight-color: transparent; }
-.primary-button, .pdf-button {
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primary-button,
+.pdf-button {
   display: inline-block;
   border: 0;
   border-radius: 999px;
@@ -65,22 +122,148 @@ button, a { -webkit-tap-highlight-color: transparent; }
   font: 700 1rem Arial, sans-serif;
   cursor: pointer;
   text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
-.primary-button { background: var(--accent); color: #20182a; }
-.primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
-.pdf-button { background: #f3e7c9; color: #21192b; margin-top: 12px; }
-.status { min-height: 24px; color: var(--muted); font: 0.95rem Arial, sans-serif; }
+
+.primary-button {
+  background: linear-gradient(
+    135deg,
+    var(--violet-intense),
+    var(--violet-bright)
+  );
+  color: #FFFFFF;
+  box-shadow:
+    0 0 12px #A855F766,
+    0 6px 18px #00000066;
+}
+
+.primary-button:hover {
+  background: linear-gradient(
+    135deg,
+    #7D16C2,
+    #B96BFF
+  );
+  box-shadow:
+    0 0 20px #A855F799,
+    0 8px 24px #00000088;
+  transform: translateY(-2px);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 0 10px #A855F755,
+    0 4px 12px #00000066;
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status {
+  min-height: 24px;
+  color: var(--muted);
+  font: 0.95rem Arial, sans-serif;
+}
+
 .result-card {
   margin: 22px auto 0;
   padding: 24px 18px 28px;
-  background: linear-gradient(145deg, #292342, var(--panel));
-  border: 1px solid #b99b5a66;
+  background:
+    linear-gradient(
+      145deg,
+      #29183A,
+      var(--panel)
+    );
+  border: 1px solid #A855F755;
   border-radius: 24px;
   max-width: 560px;
+  box-shadow:
+    0 0 25px #6A0DAD22,
+    0 14px 30px #00000066;
 }
-.result-label { margin: 0; color: var(--accent); font: 700 0.75rem Arial, sans-serif; letter-spacing: 0.16em; }
-.result-card h2 { margin: 12px 0 8px; font-size: clamp(1.7rem, 6vw, 2.7rem); }
-.result-number { margin: 0; color: var(--muted); font: 0.9rem Arial, sans-serif; }
-.hidden { display: none; }
 
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+.result-label {
+  margin: 0;
+  color: var(--violet-light);
+  font: 700 0.75rem Arial, sans-serif;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 10px #D8B4FE55;
+}
+
+.result-card h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.7rem, 6vw, 2.7rem);
+  color: var(--violet-light);
+  text-shadow: 0 0 15px #A855F755;
+}
+
+.result-number {
+  margin: 0;
+  color: var(--muted);
+  font: 0.9rem Arial, sans-serif;
+}
+
+.pdf-button {
+  margin-top: 12px;
+  background: var(--violet-light);
+  color: #24152F;
+  box-shadow:
+    0 0 12px #D8B4FE55,
+    0 5px 15px #00000055;
+}
+
+.pdf-button:hover {
+  background: #E5CEFF;
+  box-shadow:
+    0 0 18px #D8B4FE99,
+    0 7px 20px #00000066;
+  transform: translateY(-2px);
+}
+
+.pdf-button:active {
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--violet-light);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary-button,
+  .pdf-button {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 22px 14px 36px;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .primary-button,
+  .pdf-button {
+    padding: 14px 24px;
+  }
+
+  .result-card {
+    padding: 22px 16px 24px;
+    border-radius: 20px;
+  }
+}
