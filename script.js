@@ -7,6 +7,11 @@ const arcanos = [
   "El Diablo", "La Torre", "La Estrella", "La Luna", "El Sol", "El Juicio", "El Mundo"
 ];
 
+const numerosRomanos = [
+  "0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
+  "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI"
+];
+
 const colors = [
   "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7",
   "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7", "#6A0DAD", "#A855F7",
@@ -27,7 +32,7 @@ const resultCard = document.getElementById("resultCard");
 const resultName = document.getElementById("resultName");
 const resultNumber = document.getElementById("resultNumber");
 const pdfButton = document.getElementById("pdfButton");
-const resetButton = document.getElementById("resetButton"); 
+const resetButton = document.getElementById("resetButton");
 
 const total = arcanos.length;
 const slice = (Math.PI * 2) / total;
@@ -83,25 +88,26 @@ function drawWheel() {
     ctx.stroke();
 
     const mid = start + slice / 2;
-    const textRadius = radius * 0.50; 
+    const textRadius = radius * 0.50;
 
     ctx.save();
     ctx.translate(
       Math.cos(mid) * textRadius,
       Math.sin(mid) * textRadius
     );
-    
-    ctx.rotate(mid); 
 
+    ctx.rotate(mid);
+
+    const roman = numerosRomanos[i];
     const name = arcanos[i];
-    const maxHeightText = radius * 0.45; 
+    const maxHeightText = radius * 0.45;
 
-    let fontSize = Math.max(11, Math.min(17, size * 0.025));
+    let fontSize = Math.max(9, Math.min(15, size * 0.022));
     ctx.font = `700 ${fontSize}px Georgia, serif`;
 
     while (
       ctx.measureText(name).width > maxHeightText &&
-      fontSize > 9
+      fontSize > 8
     ) {
       fontSize -= 1;
       ctx.font = `700 ${fontSize}px Georgia, serif`;
@@ -114,14 +120,18 @@ function drawWheel() {
     ctx.shadowColor = "#1E1E24CC";
     ctx.shadowBlur = 4;
 
-    drawWrappedText(name, 0, 0, maxHeightText, fontSize * 1.05);
+    const romanY = -fontSize * 0.65;
+    ctx.font = `700 ${fontSize * 1.05}px Georgia, serif`;
+    ctx.fillText(roman, 0, romanY);
+
+    ctx.font = `700 ${fontSize}px Georgia, serif`;
+    drawWrappedText(name, 0, fontSize * 0.55, maxHeightText, fontSize * 1.05);
 
     ctx.restore();
   }
 
   ctx.restore();
 
-  // Borde exterior
   ctx.beginPath();
   ctx.arc(cx, cy, radius, 0, Math.PI * 2);
   ctx.strokeStyle = lightColor;
@@ -131,7 +141,6 @@ function drawWheel() {
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Centro
   const centerRadius = radius * 0.18;
 
   ctx.beginPath();
@@ -152,7 +161,6 @@ function drawWheel() {
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Símbolo central
   ctx.save();
   ctx.translate(cx, cy);
   ctx.fillStyle = lightColor;
@@ -198,35 +206,35 @@ function spinWheel() {
   if (spinning) return;
   spinning = true;
   spinButton.disabled = true;
-  
+
   resultCard.classList.add("hidden");
   pdfButton.classList.add("hidden");
-  if (resetButton) resetButton.classList.add("hidden"); 
-  
+  if (resetButton) resetButton.classList.add("hidden");
+
   status.textContent = "La ruleta está girando...";
-  
+
   const selectedIndex = Math.floor(Math.random() * total);
   const targetAngle = -selectedIndex * slice - slice / 2;
   const current = rotation % (Math.PI * 2);
   const normalizedCurrent = current < 0 ? current + Math.PI * 2 : current;
-  
+
   let delta = targetAngle - normalizedCurrent;
   while (delta < 0) { delta += Math.PI * 2; }
-  
+
   const extraTurns = 6 + Math.floor(Math.random() * 3);
   const finalRotation = rotation + delta + extraTurns * Math.PI * 2;
   const startRotation = rotation;
   const duration = 4800 + Math.random() * 700;
   const startTime = performance.now();
-  
+
   function animate(now) {
     const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
-    
+
     const eased = 1 - Math.pow(1 - progress, 3);
     rotation = startRotation + (finalRotation - startRotation) * eased;
     drawWheel();
-    
+
     if (progress < 1) {
       requestAnimationFrame(animate);
     } else {
@@ -243,18 +251,18 @@ function spinWheel() {
 function showResult(index) {
   const number = index + 1;
   const pdfNumber = String(number).padStart(2, "0");
-  
+
   resultName.textContent = arcanos[index];
-  resultNumber.textContent = "Arcano " + number;
+  resultNumber.textContent = "Arcano " + numerosRomanos[index];
   pdfButton.href = "pdf/opcion-" + pdfNumber + ".pdf";
   pdfButton.setAttribute("download", "Arcano-" + pdfNumber + ".pdf");
-  
+
   resultCard.classList.remove("hidden");
   pdfButton.classList.remove("hidden");
-  
+
   spinButton.classList.add("hidden");
-  if (resetButton) resetButton.classList.remove("hidden"); 
-  
+  if (resetButton) resetButton.classList.remove("hidden");
+
   status.textContent = "Tu Arcano ha sido elegido.";
 }
 
