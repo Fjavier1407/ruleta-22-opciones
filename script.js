@@ -99,19 +99,19 @@ function drawWheel() {
     ctx.rotate(mid);
 
     const roman = numerosRomanos[i];
-    const name = arcanos[i];
-    const maxHeightText = radius * 0.45;
+    //const name = arcanos[i];
+    //const maxHeightText = radius * 0.45;
 
     let fontSize = Math.max(9, Math.min(15, size * 0.022));
     ctx.font = `700 ${fontSize}px Georgia, serif`;
 
-    while (
-      ctx.measureText(name).width > maxHeightText &&
-      fontSize > 8
-    ) {
-      fontSize -= 1;
-      ctx.font = `700 ${fontSize}px Georgia, serif`;
-    }
+   // while (
+     // ctx.measureText(name).width > maxHeightText &&
+      //fontSize > 8
+    //) {
+      //fontSize -= 1;
+      //ctx.font = `700 ${fontSize}px Georgia, serif`;
+    //}
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -120,12 +120,21 @@ function drawWheel() {
     ctx.shadowColor = "#1E1E24CC";
     ctx.shadowBlur = 4;
 
-    const romanY = -fontSize * 0.65;
-    ctx.font = `700 ${fontSize * 1.05}px Georgia, serif`;
-    ctx.fillText(roman, 0, romanY);
+    //const romanY = -fontSize * 0.65;
+    //ctx.font = `700 ${fontSize * 1.05}px Georgia, serif`;
+    //ctx.fillText(roman, 0, romanY);
 
-    ctx.font = `700 ${fontSize}px Georgia, serif`;
-    drawWrappedText(name, 0, fontSize * 0.55, maxHeightText, fontSize * 1.05);
+    //ctx.font = `700 ${fontSize}px Georgia, serif`;
+    //drawWrappedText(name, 0, fontSize * 0.55, maxHeightText, fontSize * 1.05);
+
+
+    // Número romano
+    ctx.font = `700 ${fontSize * 1.35}px Georgia, serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = i % 2 === 0 ? textColor : "#FFFFFF";
+
+    ctx.fillText(roman, 0, 0);
 
     ctx.restore();
   }
